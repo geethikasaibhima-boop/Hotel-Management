@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UKUSA Luxury</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#f4f4f7;color:#111}
+
+/* NAV */
+header{
+position:fixed;width:100%;background:#0f172a;color:#fff;
+display:flex;justify-content:space-between;
+padding:15px 5%;z-index:1000;border-bottom:3px solid #ffcc00;
+}
+header h1{color:#ffcc00}
+nav a{color:#fff;margin-left:20px;text-decoration:none}
+nav a:hover{color:#ffcc00}
+
+/* HERO */
+.hero{
+height:80vh;
+background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),
+url("https://images.unsplash.com/photo-1542314831-068cd1dbfeeb") center/cover;
+display:flex;align-items:center;justify-content:center;
+color:white;text-align:center;
+}
+.hero h2{font-size:50px}
+
+/* SECTION */
+section{padding:100px 8%}
+.title{text-align:center;margin-bottom:40px}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:25px}
+
+/* CARD */
+.card{
+background:#fff;border-radius:6px;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+transition:.3s;
+}
+.card:hover{transform:translateY(-5px)}
+.card img{width:100%;height:220px;object-fit:cover}
+.card-body{padding:20px}
+.price{background:#0f172a;color:#ffcc00;padding:5px 10px;display:inline-block}
+
+/* MENU */
+.filter{text-align:center;margin-bottom:20px}
+.filter button{padding:10px;margin:5px;cursor:pointer}
+
+/* FORM */
+form{
+background:#fff;padding:30px;
+max-width:700px;margin:auto;
+box-shadow:0 10px 30px rgba(0,0,0,0.1)
+}
+input,select{width:100%;padding:10px;margin:10px 0}
+
+/* BUTTON */
+button{
+background:#0f172a;color:#ffcc00;
+padding:10px;border:none;cursor:pointer
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>UKUSA</h1>
+<nav>
+<a href="#stays">Stays</a>
+<a href="#venues">Venues</a>
+<a href="#menu">Menu</a>
+<a href="#reserve">Reserve</a>
+</nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+<div>
+<h2>Estate of Excellence</h2>
+<p>Luxury • Comfort • Premium</p>
+</div>
+</section>
+
+<!-- STAYS -->
+<section id="stays">
+<div class="title"><h2>Luxury Stays</h2></div>
+<div class="grid" id="stay"></div>
+</section>
+
+<!-- VENUES -->
+<section id="venues">
+<div class="title"><h2>Venues</h2></div>
+<div class="grid" id="venue"></div>
+</section>
+
+<!-- MENU -->
+<section id="menu">
+<div class="title"><h2>Menu</h2></div>
+
+<div class="filter">
+<button onclick="filterMenu('All')">All</button>
+<button onclick="filterMenu('Veg')">Veg</button>
+<button onclick="filterMenu('Non-Veg')">Non-Veg</button>
+</div>
+
+<div class="grid" id="menuBox"></div>
+</section>
+
+<!-- RESERVE -->
+<section id="reserve">
+<div class="title"><h2>Book Now</h2></div>
+
+<form id="form">
+<input id="name" placeholder="Name" required>
+<input id="email" placeholder="Email" required>
+<select id="type" onchange="loadItems()">
+<option>Stay</option>
+<option>Venue</option>
+</select>
+
+<select id="item"></select>
+
+<input type="date" id="date">
+<input type="number" id="adults" placeholder="Adults">
+<input type="number" id="kids" placeholder="Kids">
+
+<button type="submit">Confirm</button>
+</form>
+</section>
+
+<script>
+
+/* DATA */
+const stays=[
+{name:"Royal Suite",price:"₹95,000",img:"https://images.unsplash.com/photo-1578683010236-d716f9a3f461"},
+{name:"Penthouse",price:"₹1,50,000",img:"https://images.unsplash.com/photo-1590490360182-c33d57733427"}
+];
+
+const venues=[
+{name:"Ballroom",cap:500,img:"https://images.unsplash.com/photo-1519167758481-83f550bb49b3"},
+{name:"Lounge",cap:120,img:"https://images.unsplash.com/photo-1511795409834-ef04bbd61622"}
+];
+
+const menu=[
+{name:"Paneer Tikka",type:"Veg",img:"https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8"},
+{name:"Butter Chicken",type:"Non-Veg",img:"https://images.unsplash.com/photo-1603894584373-5ac82b2ae398"},
+{name:"Dal",type:"Veg",img:"https://images.unsplash.com/photo-1589647363585-f4a7d3877b10"}
+];
+
+/* LOAD STAYS */
+document.getElementById("stay").innerHTML=
+stays.map(s=>`
+<div class="card">
+<img src="${s.img}">
+<div class="card-body">
+<span class="price">${s.price}</span>
+<h3>${s.name}</h3>
+<button onclick="selectItem('Stay','${s.name}')">Select</button>
+</div>
+</div>`).join("");
+
+/* LOAD VENUES */
+document.getElementById("venue").innerHTML=
+venues.map(v=>`
+<div class="card">
+<img src="${v.img}">
+<div class="card-body">
+<span class="price">Cap:${v.cap}</span>
+<h3>${v.name}</h3>
+<button onclick="selectItem('Venue','${v.name}')">Select</button>
+</div>
+</div>`).join("");
+
+/* MENU */
+function renderMenu(data){
+document.getElementById("menuBox").innerHTML=
+data.map(m=>`
+<div class="card">
+<img src="${m.img}">
+<div class="card-body">
+<h3>${m.name}</h3>
+</div>
+</div>`).join("");
+}
+
+function filterMenu(type){
+if(type==="All") renderMenu(menu);
+else renderMenu(menu.filter(x=>x.type===type));
+}
+
+renderMenu(menu);
+
+/* DROPDOWN */
+function loadItems(){
+let type=document.getElementById("type").value;
+let data= type==="Stay"?stays:venues;
+
+document.getElementById("item").innerHTML=
+data.map(x=>`<option>${x.name}</option>`).join("");
+}
+
+loadItems();
+
+/* QUICK SELECT */
+function selectItem(type,name){
+document.getElementById("type").value=type;
+loadItems();
+document.getElementById("item").value=name;
+window.scrollTo(0,document.getElementById("reserve").offsetTop);
+}
+
+/* FORM */
+document.getElementById("form").onsubmit=e=>{
+e.preventDefault();
+
+let id="UKUSA-"+Math.floor(Math.random()*10000);
+
+let name=document.getElementById("name").value;
+let item=document.getElementById("item").value;
+
+let win=window.open();
+win.document.write(`
+<h1>UKUSA Reservation</h1>
+<p>ID: ${id}</p>
+<p>Name: ${name}</p>
+<p>Item: ${item}</p>
+<button onclick="window.print()">Print</button>
+`);
+
+alert("Booking Confirmed");
+}
+
+</script>
+
+</body>
+</html>
